@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class ExpenseController
         this.expenseService = expenseService;
     }
 
-    @GetMapping(path = "/expense/v1/")
+    @GetMapping(path = "/expense/v1/getExpense")
     public ResponseEntity<List<ExpenseDto>> getExpense(@PathParam(value = "user_id") @NonNull String userId){
          try{
             List<ExpenseDto> expenseDtoList = expenseService.getExpenses(userId);
@@ -31,6 +33,16 @@ public class ExpenseController
          }catch(Exception ex){
              return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
          }
+    }
+
+    @PostMapping(path="/expense/v1/addExpense")
+    public ResponseEntity<Boolean> addExpenses(@RequestHeader(value = "x-user-id") @NonNull String userId, ExpenseDto expenseDto){
+        try{
+            expenseDto.setUserId(userId);
+            return new ResponseEntity<>(expenseService.createExpense(expenseDto), HttpStatus.OK);
+        }catch (Exception ex){
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -23,7 +23,7 @@ public class ExpenseController
     }
 
     @GetMapping(path = "/getExpense")
-    public ResponseEntity<List<ExpenseDto>> getExpense(@RequestParam(value = "user_id") @NonNull String userId){
+    public ResponseEntity<List<ExpenseDto>> getExpense(@RequestHeader(value = "X-User-Id") @NonNull String userId){
          try{
             List<ExpenseDto> expenseDtoList = expenseService.getExpenses(userId);
             return new ResponseEntity<>(expenseDtoList, HttpStatus.OK);
